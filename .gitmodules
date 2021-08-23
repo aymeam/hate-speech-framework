@@ -7,3 +7,6 @@
 [submodule "models/ECMLPKDD20/source"]
 	path = models/ECMLPKDD20/source
 	url = https://github.com/hate-alert/DE-LIMIT.git
+[submodule "models/WEBSCI21/source"]
+	path = models/WEBSCI21/source
+	url = https://github.com/vitiugin/mlian.git
