@@ -1,3 +1,6 @@
 [submodule "models/ACL19/source"]
 	path = models/ACL19/source
 	url = https://github.com/dadangewp/ACL19-SRW.git
+[submodule "models/EMNLP20/source"]
+	path = models/EMNLP20/source
+	url = https://github.com/TharinduDR/DeepOffense.git
