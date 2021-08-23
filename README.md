@@ -1,14 +1,13 @@
 # hate-speech-framework
 
 ## Example
-$ python3
 
-import hate-speech-framework.py
+        import hate-speech-framework.py
 
-model = Models(setup).load_model(model_name="ACL")
+        model = Models(setup).load_model(model_name="ACL")
 
-trained_model = model.train(train_data,labels)
+        trained_model = model.train(train_data,labels)
 
-model.test(trained_model, test)
+        model.test(trained_model, test)
 
 >>>
