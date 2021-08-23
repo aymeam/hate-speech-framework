@@ -4,3 +4,6 @@
 [submodule "models/EMNLP20/source"]
 	path = models/EMNLP20/source
 	url = https://github.com/TharinduDR/DeepOffense.git
+[submodule "models/ECMLPKDD20/source"]
+	path = models/ECMLPKDD20/source
+	url = https://github.com/hate-alert/DE-LIMIT.git
