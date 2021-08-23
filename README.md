@@ -2,9 +2,9 @@
 
 ## Example
 
-        import hate-speech-framework.py
+        import hate-speech-framework  as hsf
 
-        model = Models(setup).load_model(model_name="ACL")
+        model = hsf.load_model(model_name="ACL")
 
         trained_model = model.train(train_data,labels)
 
