@@ -2,6 +2,7 @@
 
 ## Example
 $ python3
+
 import hate-speech-framework.py
 
 model = Models(setup).load_model(model_name="ACL")
