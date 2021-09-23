@@ -301,7 +301,7 @@ class ECMLPKDD20():
         'epsilon':1e-8,	'path_files':'multilingual_bert',	'take_ratio':False,	'sample_ratio':16,	'how_train':'baseline',	'epochs':5,	'batch_size':16,
         'to_save':True,	'weights':[1.0,1.0],	'what_bert':'normal',	'save_only_bert':False,	'max_length':128,	'random_seed':42}
         vector,id2word,word2id=load_vec(emb2)
-        test=encode_data_(vector,id2word,word2id,test,dataLabel)
+        test=encode_data_(vector,id2word,word2id,test,test)
 
         test_dataloader = DataLoader(test, batch_size=params['batch_size'])
 
