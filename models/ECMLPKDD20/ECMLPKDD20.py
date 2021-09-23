@@ -3,13 +3,16 @@ CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 print("CURR_DIR")
 print(CURR_DIR)
 from sklearn.linear_model import LogisticRegression
+sys.path.append(CURR_DIR + "/source/CNN_GRU/Models")
+sys.path.append(CURR_DIR + "/source/CNN_GRU")
+sys.path.append(CURR_DIR + "/source/BERT Classifier")
+print(CURR_DIR + "/source/BERT Classifier")
+
 from transformers import BertTokenizer, BertForSequenceClassification
 from transformers import BertTokenizer
 from transformers import BertForSequenceClassification, AdamW, BertConfig
-sys.path.append(CURR_DIR + "/CNN_GRU/Models/")
-sys.path.append(CURR_DIR + "/CNN_GRU")
-sys.path.append(CURR_DIR + "/BERT Classifier/")
-sys.path.append(CURR_DIR + "/BERT Classifier/bert_codes")
+
+#sys.path.append(CURR_DIR + "source/BERT Classifier/bert_codes")
 from transformers import get_linear_schedule_with_warmup
 import time
 
@@ -17,8 +20,8 @@ from bert_codes.feature_generation import combine_features,return_dataloader,ret
 
 from bert_codes import utils as bert_codes_utils
 print(sys.path)
-import BERT_inference
-import BERT_training_inference
+# import BERT_inference
+# import BERT_training_inference
 import glob
 import numpy as np
 from transformers import get_linear_schedule_with_warmup
@@ -70,8 +73,9 @@ def select_model(args,vector=None):
     if(text == "lstm_bad"):
         model=LSTM_bad(args)
     return model
+
 class ECMLPKDD20():
-    def __init__(self):
+    def __init__(self, setup):
       super(ECMLPKDD20, self).__init__()
       self.name = "ECMLPKDD20"
       self.paper = "ECMLPKDD20"   
@@ -79,10 +83,11 @@ class ECMLPKDD20():
       self.c = 10
       self.seed_val = 2018
       self.tokenizer =  tokenizer = BertTokenizer.from_pretrained("bert-base-multilingual-uncased", do_lower_case=False)
-
-    def train(self, train, dataLabel, test, model_type, setup, emb1, emb2):
-      lang_train = setup.split('-')[0]
-      lang_test = setup.split('-')[1] 
+      self.setup = setup
+    def train(self, train, dataLabel, model_type, emb1 = None):
+      print("model_type",model_type)
+      lang_train = self.setup.split('-')[0]
+      lang_test = self.setup.split('-')[1] 
       if model_type == 'LASER+L':
         print('LASER+LRRRRRR')
         model = LogisticRegression(C=self.c,solver='lbfgs',class_weight='balanced',random_state=self.seed_val)
@@ -194,15 +199,18 @@ class ECMLPKDD20():
         params={'logging':'local','language':'German','is_train':True,'is_model':True,
         'learning_rate':1e-4,'files':'../Dataset','csv_file':'*_full.csv','samp_strategy':'stratified',
         'epsilon':1e-8,'path_files':'cnngru','take_ratio':True,'sample_ratio':100,'how_train':'baseline',
-        'epochs':20,'batch_size':16,'to_save':True,'weights':[1.0,1.0],'what_bert':'normal',
+        'epochs':20,'batch_size':16,'to_save':False,'weights':[1.0,1.0],'what_bert':'normal',
         'save_only_bert':False,'max_length':128,'columns_to_consider':['directness','target','group'],
         'random_seed':42,'embed_size':300,'train_embed':True,'take_target':False,'pair':False} 
 
         params['learning_rate']=2e-4
         params['random_seed']=2018
         ###########
+        try:
+          vector,id2word,word2id=load_vec(emb1)
 
-        vector,id2word,word2id=load_vec(emb1)
+        except:
+          sys.out("provide the embeddings path")
 
         train_data=encode_data_(vector,id2word,word2id,train,dataLabel)
         
@@ -274,7 +282,7 @@ class ECMLPKDD20():
         return model
         ###########
     
-    def test(self, model, test, setup, model_type, emb2):
+    def test(self, model, test, setup, model_type, emb2 = None):
       lang_test = setup.split('-')[1] 
 
       if model_type == 'LASER+L':
@@ -282,7 +290,11 @@ class ECMLPKDD20():
         dataTest = gen_data_laser(test, lang_test)
         #train_model(params)
         y_pred = model.predict(dataTest)
-    
+        del model
+        torch.cuda.empty_cache()
+        file_out = CURR_DIR +"/results_" +  setup + '_'+ self.name+".txt"
+        save_preds(y_pred, file_out)
+      
       elif model_type == 'MBERT' or model_type == 'Translation + BERT':
         print('MBERT')
         params={'is_train':True,	'is_model':True,	'learning_rate':2e-5,	'files':'../Dataset',	'csv_file':'*_full.csv',	'samp_strategy':'stratified',
